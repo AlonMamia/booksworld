@@ -1,6 +1,8 @@
 import React, { Component, useEffect, useState } from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
+import Rating from "@mui/material/Rating";
+import { maxHeight } from "@mui/system";
 
 class Book extends Component {
   render() {
@@ -10,7 +12,7 @@ class Book extends Component {
         <image src={this.props.photo} width="1000" height="1000"></image>
         <h2 id="author">{this.props.author}</h2>
         <h2 id="description">{this.props.description}</h2>
-        <h2 id="raiting">{this.props.raiting}</h2>
+        <h2 id="rating">{this.props.rating}</h2>
         <h2 id="InStock">{this.props.InStock}</h2>
         <h2 id="tags">{this.props.tags}</h2>
       </div>
@@ -41,16 +43,34 @@ export default class Booklist extends Component {
         alert("Error receiving book list");
       });
   };
-
+  samerowbook = () => {};
   displayBooks = (books) => {
     if (!books.length) return null;
     console.log(books);
     const rendered_books = books.map((book, index) => {
       return (
-        <div key={index}>
-          <h1>{book.photo}</h1>
-          <img src={book.photo}></img>
-        </div>
+        <td>
+          <Card
+            style={{
+              marginLeft: "10px",
+              width: "200px",
+              height: "400px",
+              borderWidth: "1px",
+              position: "relative",
+            }}
+            key={index}
+          >
+            <div style={{ margin: "auto", padding: 20 }}>
+              <Card.Img
+                src={book.photo}
+                style={{ width: "167px", height: "250px" }}
+              ></Card.Img>
+              <Card.Title style={{ minBlockSize: 50 }}>{book.name}</Card.Title>
+              {/* <Card.Text style={{ fontSize: "19px" }}>{book.description}</Card.Text> */}
+              <Rating readOnly value={book.rating}></Rating>
+            </div>
+          </Card>
+        </td>
       );
     });
     return rendered_books;
@@ -58,8 +78,8 @@ export default class Booklist extends Component {
 
   render() {
     return (
-      <div>
-        <h1>{this.displayBooks(this.state.books)}</h1>
+      <div style={{ marginTop: "200px" }}>
+        {this.displayBooks(this.state.books)}
       </div>
     );
     // return (

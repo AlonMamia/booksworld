@@ -7,25 +7,36 @@ export default class Searchbox extends React.Component {
     super(props);
     this.state = {
       searchbox_value: "",
+      select_value: "",
       category: "",
     };
   }
 
-  searchBooks = () => {};
+  searchBooks = () => {
+    
+
+
+  };
 
   handleSearchboxChange = (event) => {
     this.setState({ searchbox_value: event.target.value });
     console.log(this.state.searchbox_value);
   };
 
+  handleSelectChange =(event) => {
+    this.setState({select_value: event.target.value})
+  }
+
   handleSubmit = (event) => {
     alert("submitted!!!");
+
     event.preventDefault();
   };
+
   render() {
     return (
       <>
-        <div style={{ width: "50%", margin: "auto" }}>
+        <div style={{ width: "50%", margin: "auto", position: "relative" }}>
           <h1 style={{ textAlign: "center" }}>World of books</h1>
           <div>
             <Form
@@ -45,7 +56,7 @@ export default class Searchbox extends React.Component {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Search by: </Form.Label>
-                <Form.Select id="category">
+                <Form.Select id="category" onChange={this.handleSelectChange}>
                   <option>Name</option>
                   <option>Author</option>
                 </Form.Select>

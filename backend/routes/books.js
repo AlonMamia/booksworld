@@ -24,7 +24,7 @@ route.post("/create", upload.single("photo"), async (req, res) => {
     name: req.body.name,
     author: req.body.author,
     description: req.body.description,
-    raiting: req.body.raiting,
+    rating: req.body.rating,
     InStock: req.body.InStock,
     tags: req.body.tags,
   });
@@ -55,8 +55,11 @@ route.get("/all", async (req, res) => {
   return res.send(allbooks);
 });
 
-route.get("search/name/:name", async (req, res) => {
-  let books_by_name = await Book.find({ name: req.params.name });
+route.get("search/:name/:author", async (req, res) => {
+  let books_by_name = await Book.find({
+    name: { $regex: req.params.name, $opinions: "i" },
+    author: { $regex: req.params.author, $opinions: "i" },
+  });
   return res.send(books_by_name);
 });
 

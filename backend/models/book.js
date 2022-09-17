@@ -13,7 +13,7 @@ const book_schema = mongoose.Schema({
   photo: String,
   description: String,
   tags: [String],
-  raiting: Number,
+  rating: Number,
   InStock: Number,
 });
 

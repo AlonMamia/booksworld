@@ -8,7 +8,12 @@ import Searchbox from "./components/Searchbox";
 import "bootstrap/dist/css/bootstrap.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Searchbox></Searchbox>);
+root.render(
+  <div>
+    <Searchbox></Searchbox>
+    <Booklist></Booklist>
+  </div>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
