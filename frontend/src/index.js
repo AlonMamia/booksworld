@@ -9,9 +9,8 @@ import "bootstrap/dist/css/bootstrap.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <div>
+  <div style={{ position: "relative" }}>
     <Searchbox></Searchbox>
-    <Booklist></Booklist>
   </div>
 );
 

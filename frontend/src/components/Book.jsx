@@ -1,24 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import Rating from "@mui/material/Rating";
-import { maxHeight } from "@mui/system";
-
-class Book extends Component {
-  render() {
-    return (
-      <div>
-        <h1 id="name">{this.props.book_name}</h1>
-        <image src={this.props.photo} width="1000" height="1000"></image>
-        <h2 id="author">{this.props.author}</h2>
-        <h2 id="description">{this.props.description}</h2>
-        <h2 id="rating">{this.props.rating}</h2>
-        <h2 id="InStock">{this.props.InStock}</h2>
-        <h2 id="tags">{this.props.tags}</h2>
-      </div>
-    );
-  }
-}
 
 export default class Booklist extends Component {
   constructor(props) {
@@ -43,13 +26,51 @@ export default class Booklist extends Component {
         alert("Error receiving book list");
       });
   };
-  samerowbook = () => {};
+
+  searchBooksByName = (name, category) => {
+    axios({
+      method: "post",
+      url: "/books/get_books_by_name",
+      headers: {},
+      data: {
+        name: name,
+        category: category,
+      },
+    })
+      .then((response) => {
+        const data = response.data;
+        this.setState({ books: data });
+      })
+      .catch((e) => {
+        alert(e.message);
+      });
+  };
+
+  searchBooksByAuthor = (author, category) => {
+    console.log(author + category);
+    axios({
+      method: "post",
+      url: "/books/get_books_by_author",
+      headers: {},
+      data: {
+        author: author,
+        category: category,
+      },
+    })
+      .then((response) => {
+        const data = response.data;
+        this.setState({ books: data });
+      })
+      .catch((e) => {
+        alert(e.message);
+      });
+  };
+
   displayBooks = (books) => {
     if (!books.length) return null;
-    console.log(books);
     const rendered_books = books.map((book, index) => {
       return (
-        <td>
+        <Col style={{ margin: "10px" }} key={index}>
           <Card
             style={{
               marginLeft: "10px",
@@ -58,7 +79,6 @@ export default class Booklist extends Component {
               borderWidth: "1px",
               position: "relative",
             }}
-            key={index}
           >
             <div style={{ margin: "auto", padding: 20 }}>
               <Card.Img
@@ -70,7 +90,7 @@ export default class Booklist extends Component {
               <Rating readOnly value={book.rating}></Rating>
             </div>
           </Card>
-        </td>
+        </Col>
       );
     });
     return rendered_books;
@@ -78,16 +98,9 @@ export default class Booklist extends Component {
 
   render() {
     return (
-      <div style={{ marginTop: "200px" }}>
-        {this.displayBooks(this.state.books)}
+      <div style={{ marginTop: "100px" }}>
+        <Row xs={7}>{this.displayBooks(this.state.books)}</Row>
       </div>
     );
-    // return (
-    //   <div className="container">
-    //     <form>
-    //       <input type="search" name="book_search" placeholder="Search here!" />
-    //     </form>
-    //   </div>
-    // );
   }
 }

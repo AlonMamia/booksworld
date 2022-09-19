@@ -45,27 +45,27 @@ route.post("/upload_pic", upload.single("profile_pic"), async (req, res) => {
   return res.send(req.file);
 });
 
-// route.post("/create/", async (req, res) => {
-//   console.log("hi");
-//   return res.send("hi");
-// });
-
 route.get("/all", async (req, res) => {
   let allbooks = await Book.find({});
   return res.send(allbooks);
 });
 
-route.get("search/:name/:author", async (req, res) => {
+route.post("/get_books_by_name", async (req, res) => {
   let books_by_name = await Book.find({
-    name: { $regex: req.params.name, $opinions: "i" },
-    author: { $regex: req.params.author, $opinions: "i" },
+    // name: { $regex: req.body.name, $opinions: "i" },
+    name: req.body.name,
+    // author: { $regex: req.body.author, $opinions: "i" },
   });
   return res.send(books_by_name);
 });
 
-route.get("search/author/:author", async (req, res) => {
-  let books_by_author = await Book.find({ author: req.params.author });
-  return res.send(books_by_author);
+route.post("/get_books_by_author", async (req, res) => {
+  let books_by_name = await Book.find({
+    // name: { $regex: req.body.name, $opinions: "i" },
+    author: req.body.author,
+    // author: { $regex: req.body.author, $opinions: "i" },
+  });
+  return res.send(books_by_name);
 });
 
 module.exports = route;
