@@ -15,6 +15,7 @@ const book_schema = mongoose.Schema({
   tags: [String],
   rating: Number,
   InStock: Number,
+  price: Number,
 });
 
 const Book = new mongoose.model("books", book_schema);

@@ -3,9 +3,10 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Booklist from "./components/Book";
+import Booklist from "./components/Booklist";
 import Searchbox from "./components/Searchbox";
 import "bootstrap/dist/css/bootstrap.css";
+import "reactjs-popup/dist/index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
