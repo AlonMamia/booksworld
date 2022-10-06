@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import Rating from "@mui/material/Rating";
+import Book from "./Book";
 
 export default class Booklist extends Component {
   constructor(props) {
@@ -67,12 +68,17 @@ export default class Booklist extends Component {
       });
   };
 
+  selectBook = (index) => {
+    this.setState({ current_book: this.state.books[index] });
+  };
   displayBooks = (books) => {
     if (!books.length) return null;
     const rendered_books = books.map((book, index) => {
       return (
         <Col style={{ marginBottom: "10px" }} key={index}>
           <Card
+            defaultValue={book}
+            onClick={() => this.selectBook(index)}
             style={{
               // marginLeft: "10px",
               width: "200px",
@@ -98,19 +104,27 @@ export default class Booklist extends Component {
   };
 
   render() {
-    return (
-      <div
-        style={{
-          marginTop: "50px",
-          width: "100%",
-          marginRight: "auto",
-          visibility: false,
-        }}
-      >
-        <Row xs={"auto"} xxl={4}>
-          {this.displayBooks(this.state.books)}
-        </Row>
-      </div>
-    );
+    if (this.state.current_book) {
+      return (
+        <div style={{ marginTop: "50px" }}>
+          <Book book={this.state.current_book}></Book>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            marginTop: "50px",
+            width: "100%",
+            marginRight: "auto",
+            visibility: false,
+          }}
+        >
+          <Row xs={"auto"} xxl={4}>
+            {this.displayBooks(this.state.books)}
+          </Row>
+        </div>
+      );
+    }
   }
 }

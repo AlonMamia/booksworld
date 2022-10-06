@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Form } from "react-bootstrap";
 import { axios } from "axios";
 import Booklist from "./Booklist";
+import Book from "./Book";
 
 export default class Searchbox extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ export default class Searchbox extends React.Component {
       searchbox_value: " ",
       select_value: "Name",
       category: "",
+      selected: false
     };
   }
 
