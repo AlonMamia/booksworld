@@ -1,4 +1,10 @@
-import React, { useState, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+  useRef,
+} from "react";
 import axios from "axios";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import Rating from "@mui/material/Rating";
@@ -6,11 +12,13 @@ import Book from "./Book";
 // import { stylesheet  } from "../styles/stylesheet.css";
 import "../styles/cardstyle.css";
 import { maxHeight } from "@mui/system";
-const path = require("path");
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 
 export const Booklist = forwardRef((props, ref) => {
   const [books, setBooks] = useState([]);
   const [current_book, setCurrent_book] = useState(null);
+  const first_update = useRef(true);
+  const navigate = useNavigate();
 
   useImperativeHandle(ref, () => ({
     searchBooksByName(name, category) {
@@ -68,18 +76,22 @@ export const Booklist = forwardRef((props, ref) => {
     setCurrent_book(books[index]);
   };
 
+  useEffect(() => {
+    if (!first_update.current) {
+      console.log(current_book.Count);
+      // axios.get(`/books/${current_book.Count}`);
+      // navigate(`/books/${current_book.Count}`);
+      navigate(`/hi`);
+    } else {
+      first_update.current = false;
+      return;
+    }
+
+    //
+  }, [current_book]);
+
   const displayBooks = (books) => {
     if (!books.length) return null;
-    // const photos = books.map(async (book, index) => {
-    //   const photo = axios({
-    //     method: "get",
-    //     url: `localhost:5000/books/images/${book.photo}`,
-    //     headers: {},
-    //     data: {},
-    //   });
-
-    //   return photo;
-    // });
 
     const rendered_books = books.map((book, index) => {
       return (
@@ -99,7 +111,10 @@ export const Booklist = forwardRef((props, ref) => {
             <p className="copy">
               <Rating readOnly value={book.rating}></Rating>
             </p>
-            <Button className="primary" onClick={() => selectBook(books,index)}>
+            <Button
+              className="primary"
+              onClick={() => selectBook(books, index)}
+            >
               view
             </Button>
           </div>
@@ -109,38 +124,67 @@ export const Booklist = forwardRef((props, ref) => {
     return rendered_books;
   };
 
-  const getOtherBooks = (books) => {
-    const books_without_selected = books.filter((book) => book != current_book);
-
-    return books_without_selected;
-  };
-
-  if (current_book) {
-    return (
-      <div style={{ marginTop: "50px" }}>
-        <h1>{props.search_value}</h1>
-        <Book
-          book={current_book}
-          Booklist={books}
-          selectBook={selectBook}
-        ></Book>
-      </div>
-    );
-  } else {
-    return (
-      <div
-        style={{
-          marginTop: "50px",
-          width: "100%",
-          marginRight: "auto",
-          visibility: false,
-        }}
-      >
-        {/* <img src="/books/images/91fbe1589b4cafd755286bc50e36df71"></img> */}
-        <Row xs={"auto"} xxl={"auto"}>
-          {displayBooks(books)}
-        </Row>
-      </div>
-    );
-  }
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="books/counter"
+          element={
+            <div style={{ marginTop: "50px" }}>
+              <h1>{props.search_value}</h1>
+              <Book
+                book={current_book}
+                Booklist={books}
+                selectBook={selectBook}
+              ></Book>
+            </div>
+          }
+        ></Route>
+        <Route
+          path="/"
+          element={
+            <div
+              style={{
+                marginTop: "50px",
+                width: "100%",
+                marginRight: "auto",
+                visibility: false,
+              }}
+            >
+              <Row xs={"auto"} xxl={"auto"}>
+                {displayBooks(books)}
+              </Row>
+            </div>
+          }
+        ></Route>
+      </Routes>
+    </BrowserRouter>
+  );
+  // if (current_book) {
+  //   return (
+  //     <div style={{ marginTop: "50px" }}>
+  //       <h1>{props.search_value}</h1>
+  //       <Book
+  //         book={current_book}
+  //         Booklist={books}
+  //         selectBook={selectBook}
+  //       ></Book>
+  //     </div>
+  //   );
+  // } else {
+  //   return (
+  //     <div
+  //       style={{
+  //         marginTop: "50px",
+  //         width: "100%",
+  //         marginRight: "auto",
+  //         visibility: false,
+  //       }}
+  //     >
+  //       <Row xs={"auto"} xxl={"auto"}>
+  //         {displayBooks(books)}
+  //       </Row>
+  //     </div>
+  //   );
+  // }
 });

@@ -23,7 +23,10 @@ export default function MainNav(props) {
   // };
 
   useEffect(() => {
-    console.log(select_value);
+    if (searchbox_value == null || searchbox_value.trim() === "") {
+      ChildRef.current.getBooks();
+    }
+    else{
     switch (select_value) {
       case "Name":
         ChildRef.current.searchBooksByName(searchbox_value, category);
@@ -32,9 +35,8 @@ export default function MainNav(props) {
         ChildRef.current.searchBooksByAuthor(searchbox_value, category);
         break;
     }
-    if (searchbox_value == null || searchbox_value.trim() === "") {
-      ChildRef.current.getBooks();
-    }
+  }
+    
   }, [searchbox_value]);
 
   return (

@@ -44,12 +44,6 @@ route.post("/get_books_by_author", async (req, res) => {
   }
 });
 
-route.post("/", async (req, res) => {
-  // let book = Book.find({});
-  // console.log("hi");
-  return res.send("hi");
-});
-
 route.post("/create", upload.single("photo"), async (req, res) => {
   let photo = "";
   let newone = new Book({
@@ -93,9 +87,15 @@ route.get("/images/:key", (req, res) => {
   readStream.pipe(res);
 });
 
-route.get("selected/:book_name", (req, res) => {
-  if (req.params.book_name) {
-    Book.findOne({ name: req.params.book_name });
+route.get("/:counter", async (req, res) => {
+  if (req.params.counter) {
+    try {
+      const book = await Book.findOne({ Count: req.params.counter });
+      delete book["_id"];
+      return res.send(book);
+    } catch (e) {
+      return res.statusMessage(e.message).send;
+    }
   }
 });
 
