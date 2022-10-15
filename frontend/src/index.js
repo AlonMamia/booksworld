@@ -1,17 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+// import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Booklist from "./components/Booklist";
-import Searchbox from "./components/Searchbox";
+import Searchbox from "./components/before_function_change/Searchbox";
 import "bootstrap/dist/css/bootstrap.css";
 import "reactjs-popup/dist/index.css";
+import MainNav from "./components/MainNav"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <div style={{ position: "relative" }}>
-    <Searchbox></Searchbox>
+    <MainNav></MainNav>
   </div>
 );
 

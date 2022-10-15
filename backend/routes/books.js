@@ -1,7 +1,10 @@
 const express = require("express");
 const route = express.Router();
 const { Book } = require("../models/book");
-const upload = require("../middleware/upload");
+// const upload = require("../middleware/upload");
+const multer = require("multer");
+const upload = multer({ dest: "uploads" });
+const { uploadFile, getFileStream } = require("../s3");
 const fs = require("fs");
 const path = require("path");
 
@@ -13,9 +16,10 @@ function escapeRegex(text) {
 }
 
 route.post("/get_books_by_name", (req, res) => {
+  console.log("name" + req.body.name);
   if (req.body.name) {
     const regex = new RegExp(escapeRegex(req.body.name), "gi");
-    console.log("reg:" + regex);
+    // console.log("reg:" + regex);
     Book.find({ name: regex }, (err, books) => {
       if (err) {
         console.log(err);
@@ -47,10 +51,7 @@ route.post("/", async (req, res) => {
 });
 
 route.post("/create", upload.single("photo"), async (req, res) => {
-  // console.log(req.file);
-  // let img = fs.readFileSync(req.file.path, "base64");
-  // // let encode_img = img.toString("base64");
-  // // let buffer = Buffer.from(encode_img, "base64");
+  let photo = "";
   let newone = new Book({
     name: req.body.name,
     author: req.body.author,
@@ -61,7 +62,9 @@ route.post("/create", upload.single("photo"), async (req, res) => {
     price: req.body.price,
   });
   if (req.file) {
-    newone.photo = req.file.path;
+    // newone.photo = req.file.path;
+    photo = await uploadFile(req.file);
+    newone.photo = photo["key"];
   }
   const result = await newone
     .save()
@@ -79,16 +82,21 @@ route.post("/upload_pic", upload.single("profile_pic"), async (req, res) => {
 
 route.get("/all", async (req, res) => {
   let allbooks = await Book.find({});
+  delete allbooks["_id"];
   return res.send(allbooks);
 });
 
-// route.post("/get_books_by_name", async (req, res) => {
-//   let books_by_name = await Book.find({
-//     // name: { $regex: req.body.name, $opinions: "i" },
-//     name: { $regex: req.body.name },
-//     // author: { $regex: req.body.author, $opinions: "i" },
-//   });
-//   return res.send(books_by_name);
-// });
+route.get("/images/:key", (req, res) => {
+  const key = req.params.key;
+  const readStream = getFileStream(key);
+
+  readStream.pipe(res);
+});
+
+route.get("selected/:book_name", (req, res) => {
+  if (req.params.book_name) {
+    Book.findOne({ name: req.params.book_name });
+  }
+});
 
 module.exports = route;
