@@ -12,7 +12,14 @@ import Book from "./Book";
 // import { stylesheet  } from "../styles/stylesheet.css";
 import "../styles/cardstyle.css";
 import { maxHeight } from "@mui/system";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useNavigate,
+  Navigate,
+  useParams,
+} from "react-router-dom";
 
 export const Booklist = forwardRef((props, ref) => {
   const [books, setBooks] = useState([]);
@@ -72,22 +79,17 @@ export const Booklist = forwardRef((props, ref) => {
     },
   }));
 
-  const selectBook = (books, index) => {
-    setCurrent_book(books[index]);
+  const selectBook = async (books, index_in_array) => {
+    setCurrent_book(books[index_in_array]);
+    setBooks(books.splice(index_in_array, 1));
   };
 
   useEffect(() => {
     if (!first_update.current) {
-      console.log(current_book.Count);
-      // axios.get(`/books/${current_book.Count}`);
-      // navigate(`/books/${current_book.Count}`);
-      navigate(`/hi`);
+      navigate(`/books/${current_book.Count}`);
     } else {
       first_update.current = false;
-      return;
     }
-
-    //
   }, [current_book]);
 
   const displayBooks = (books) => {
@@ -125,66 +127,39 @@ export const Booklist = forwardRef((props, ref) => {
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="books/counter"
-          element={
-            <div style={{ marginTop: "50px" }}>
-              <h1>{props.search_value}</h1>
+    <Routes>
+      <Route
+        path="/books/:index"
+        element={
+          <div style={{ marginTop: "50px" }}>
+            <h1>{props.search_value}</h1>
+            {
               <Book
                 book={current_book}
                 Booklist={books}
                 selectBook={selectBook}
               ></Book>
-            </div>
-          }
-        ></Route>
-        <Route
-          path="/"
-          element={
-            <div
-              style={{
-                marginTop: "50px",
-                width: "100%",
-                marginRight: "auto",
-                visibility: false,
-              }}
-            >
-              <Row xs={"auto"} xxl={"auto"}>
-                {displayBooks(books)}
-              </Row>
-            </div>
-          }
-        ></Route>
-      </Routes>
-    </BrowserRouter>
+            }
+          </div>
+        }
+      ></Route>
+      <Route
+        path="/"
+        element={
+          <div
+            style={{
+              marginTop: "50px",
+              width: "100%",
+              marginRight: "auto",
+              visibility: false,
+            }}
+          >
+            <Row xs={"auto"} xxl={"auto"}>
+              {displayBooks(books)}
+            </Row>
+          </div>
+        }
+      ></Route>
+    </Routes>
   );
-  // if (current_book) {
-  //   return (
-  //     <div style={{ marginTop: "50px" }}>
-  //       <h1>{props.search_value}</h1>
-  //       <Book
-  //         book={current_book}
-  //         Booklist={books}
-  //         selectBook={selectBook}
-  //       ></Book>
-  //     </div>
-  //   );
-  // } else {
-  //   return (
-  //     <div
-  //       style={{
-  //         marginTop: "50px",
-  //         width: "100%",
-  //         marginRight: "auto",
-  //         visibility: false,
-  //       }}
-  //     >
-  //       <Row xs={"auto"} xxl={"auto"}>
-  //         {displayBooks(books)}
-  //       </Row>
-  //     </div>
-  //   );
-  // }
 });

@@ -80,11 +80,15 @@ route.get("/all", async (req, res) => {
   return res.send(allbooks);
 });
 
-route.get("/images/:key", (req, res) => {
-  const key = req.params.key;
-  const readStream = getFileStream(key);
+route.get("/images/:key", async (req, res) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
 
-  readStream.pipe(res);
+    readStream.pipe(res);
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 route.get("/:counter", async (req, res) => {
@@ -92,9 +96,10 @@ route.get("/:counter", async (req, res) => {
     try {
       const book = await Book.findOne({ Count: req.params.counter });
       delete book["_id"];
+      // console.log(book);
       return res.send(book);
     } catch (e) {
-      return res.statusMessage(e.message).send;
+      return res.send(e.message);
     }
   }
 });

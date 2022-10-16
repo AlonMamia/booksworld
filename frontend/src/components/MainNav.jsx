@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Nav, Navbar, Container, Form, Row, Col } from "react-bootstrap";
 import { Booklist } from "./Booklist";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  BrowserRouter,
+} from "react-router-dom";
 
 export default function MainNav(props) {
   // const [books, setBooks] = useState([])
@@ -25,18 +31,16 @@ export default function MainNav(props) {
   useEffect(() => {
     if (searchbox_value == null || searchbox_value.trim() === "") {
       ChildRef.current.getBooks();
+    } else {
+      switch (select_value) {
+        case "Name":
+          ChildRef.current.searchBooksByName(searchbox_value, category);
+          break;
+        case "Author":
+          ChildRef.current.searchBooksByAuthor(searchbox_value, category);
+          break;
+      }
     }
-    else{
-    switch (select_value) {
-      case "Name":
-        ChildRef.current.searchBooksByName(searchbox_value, category);
-        break;
-      case "Author":
-        ChildRef.current.searchBooksByAuthor(searchbox_value, category);
-        break;
-    }
-  }
-    
   }, [searchbox_value]);
 
   return (
@@ -71,7 +75,9 @@ export default function MainNav(props) {
           </Nav>
         </Container>
       </Navbar>
-      <Booklist search_value={searchbox_value} ref={ChildRef}></Booklist>
+      <BrowserRouter>
+        <Booklist search_value={searchbox_value} ref={ChildRef}></Booklist>
+      </BrowserRouter>
     </>
   );
 }

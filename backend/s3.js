@@ -27,11 +27,15 @@ function uploadFile(file) {
 }
 
 function getFileStream(fileKey) {
-  const downloadParams = {
-    Key: fileKey,
-    Bucket: bucketName,
-  };
-  return s3.getObject(downloadParams).createReadStream();
+  try {
+    const downloadParams = {
+      Key: fileKey,
+      Bucket: bucketName,
+    };
+    return s3.getObject(downloadParams).createReadStream();
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 module.exports = { uploadFile, getFileStream };

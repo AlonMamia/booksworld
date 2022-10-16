@@ -5,7 +5,7 @@ import { Rating } from "@mui/material";
 
 export default function Book_menu(props) {
   const books = props.books;
-  console.log(books);
+  // console.log(books);
 
   return (
     <div>

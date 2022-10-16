@@ -1,21 +1,34 @@
 import { Rating } from "@mui/material";
+import axios from "axios";
 import React, { useEffect } from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Col, Image, Row, Container } from "react-bootstrap";
+import { useSearchParams, useParams } from "react-router-dom";
 import "../styles/stylesheet.css";
 import Book_menu from "./Book_menu";
 
 export default function Book(props) {
+  const { index } = useParams();
   const [books, setBooks] = useState(() => {
     return props.Booklist.filter((book) => book != props.book);
   });
 
+  const [book, setBook] = useState();
+
+  const IsFirst = useRef(true);
+
   useEffect(() => {
-    setBooks(() => {
-      return props.Booklist.filter((book) => book != props.book);
-    });
-  }, [books]);
-  // console.log(books);
+    if (book == undefined) {
+      fetch(`/books/${index}`)
+        .then((res) => res.json())
+        .then((data) => setBook(data));
+      console.log(book);
+    }
+  }, [book]);
+
+  if (book == undefined) {
+    return <h1>Not Found!</h1>;
+  }
   return (
     <div
       style={{
@@ -25,7 +38,7 @@ export default function Book(props) {
       <Container className="book-container">
         <div className="book-photo">
           <Image
-            src={"/books/images/" + props.book.photo}
+            src={"/books/images/" + book.photo}
             height="100%"
             width="100%"
             style={{
@@ -38,19 +51,19 @@ export default function Book(props) {
         </div>
 
         <div className="book-content">
-          <h1>{props.book.name}</h1>
-          <p>{props.book.author}</p>
-          <Rating value={props.book.rating} readOnly></Rating>
-          <p>{props.book.description}</p>
+          <h1>{book.name}</h1>
+          <p>{book.author}</p>
+          <Rating value={book.rating} readOnly></Rating>
+          <p>{book.description}</p>
           <Row>
             <Col>
               <p style={{ fontSize: 24 }}>
-                In stock: <b>{props.book.InStock}</b>
+                In stock: <b>{book.InStock}</b>
               </p>
             </Col>
             <Col>
               <p style={{ fontSize: 24 }}>
-                Price: <b>{props.book.price}$</b>
+                Price: <b>{book.price}$</b>
               </p>
             </Col>
           </Row>
