@@ -9,25 +9,33 @@ import Book_menu from "./Book_menu";
 
 export default function Book(props) {
   const { index } = useParams();
-  const [books, setBooks] = useState(() => {
-    return props.Booklist.filter((book) => book != props.book);
-  });
+  const [books, setBooks] = useState([]);
 
   const [book, setBook] = useState();
 
   const IsFirst = useRef(true);
 
   useEffect(() => {
-    if (book == undefined) {
+    if (book == undefined || book.Count != index) {
       fetch(`/books/${index}`)
         .then((res) => res.json())
         .then((data) => setBook(data));
-      console.log(book);
     }
   }, [book]);
 
+  useEffect(() => {
+    if (book) {
+      fetch(`/books/all`)
+        .then((res) => res.json())
+        .then((data) => {
+          const newlist = data.filter((current) => current.name != book.name);
+          console.log(data);
+          setBooks(newlist);
+        });
+    }
+  }, [books]);
   if (book == undefined) {
-    return <h1>Not Found!</h1>;
+    return <></>;
   }
   return (
     <div
@@ -69,7 +77,11 @@ export default function Book(props) {
           </Row>
         </div>
       </Container>
-      <Book_menu selectBook={props.selectBook} books={books}></Book_menu>
+      <Book_menu
+        selectBook={props.selectBook}
+        books={props.Booklist}
+        setBook={setBook}
+      ></Book_menu>
     </div>
   );
 }

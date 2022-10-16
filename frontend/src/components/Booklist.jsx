@@ -81,7 +81,8 @@ export const Booklist = forwardRef((props, ref) => {
 
   const selectBook = async (books, index_in_array) => {
     setCurrent_book(books[index_in_array]);
-    setBooks(books.splice(index_in_array, 1));
+    setBooks(books.filter((book) => book != current_book));
+    console.log(current_book);
   };
 
   useEffect(() => {
@@ -132,12 +133,11 @@ export const Booklist = forwardRef((props, ref) => {
         path="/books/:index"
         element={
           <div style={{ marginTop: "50px" }}>
-            <h1>{props.search_value}</h1>
             {
               <Book
-                book={current_book}
                 Booklist={books}
                 selectBook={selectBook}
+                current_book={current_book}
               ></Book>
             }
           </div>

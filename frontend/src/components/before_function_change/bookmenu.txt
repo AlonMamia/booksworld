@@ -1,0 +1,71 @@
+import HorizontalScroll from "react-horizontal-scrolling";
+import React, { useEffect, useState } from "react";
+import { Card } from "react-bootstrap";
+import { Rating } from "@mui/material";
+import { Routes } from "react-router-dom";
+
+export default function Book_menu(props) {
+  const [books, setBooks] = useState();
+  const [alldata, setAlldata] = useState();
+  const [book, setBook] = useState(props.book);
+
+  useEffect(() => {
+    if (books == [] || books == undefined || book.Count != props.book.Count) {
+      fetch(`/books/all`)
+        .then((res) => res.json())
+        .then((data) => {
+          setBooks(data);
+          setAlldata(data);
+        });
+    } else if (alldata.length == books.length) {
+      const newlist = books.filter(
+        (current_book) => current_book.name != book.name
+      );
+      setBooks(newlist);
+    }
+  }, [books, book]);
+
+  if (books == [] || books == undefined) {
+    return <h1></h1>;
+  }
+
+  const handleSelectBook = (books, index) => {
+    setBook(books[index]);
+    props.selectBook(books, index);
+    props.setBook(books[index]);
+  };
+  return (
+    <div>
+      <HorizontalScroll>
+        {books.map((book, index) => {
+          return (
+            <Card
+              key={index}
+              defaultValue={book}
+              onClick={() => handleSelectBook(books, index)}
+              style={{
+                // marginLeft: "10px",
+                width: "200px",
+                height: "400px",
+                borderWidth: "1px",
+                position: "relative",
+              }}
+            >
+              <div style={{ margin: "auto", padding: 20 }}>
+                <Card.Img
+                  src={"/books/images/" + book.photo}
+                  style={{ width: "100%", height: "80%" }}
+                ></Card.Img>
+                <Card.Title style={{ minBlockSize: 50 }}>
+                  {book.name}
+                </Card.Title>
+                {/* <Card.Text style={{ fontSize: "19px" }}>{book.description}</Card.Text> */}
+                <Rating readOnly value={book.rating}></Rating>
+              </div>
+            </Card>
+          );
+        })}
+      </HorizontalScroll>
+    </div>
+  );
+}
