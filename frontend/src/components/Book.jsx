@@ -10,7 +10,6 @@ import Book_menu from "./Book_menu";
 export default function Book(props) {
   const { index } = useParams();
   const [books, setBooks] = useState([]);
-
   const [book, setBook] = useState();
 
   const IsFirst = useRef(true);
@@ -29,11 +28,11 @@ export default function Book(props) {
         .then((res) => res.json())
         .then((data) => {
           const newlist = data.filter((current) => current.name != book.name);
-          console.log(data);
+          console.log(newlist);
           setBooks(newlist);
         });
     }
-  }, [books]);
+  }, [book]);
   if (book == undefined) {
     return <></>;
   }
@@ -77,11 +76,12 @@ export default function Book(props) {
           </Row>
         </div>
       </Container>
-      <Book_menu
+      {/* <Book_menu
         selectBook={props.selectBook}
         books={props.Booklist}
         setBook={setBook}
-      ></Book_menu>
+      ></Book_menu> */}
+      {/* <h1>{JSON.stringify(books)}</h1> */}
     </div>
   );
 }
