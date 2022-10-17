@@ -1,7 +1,8 @@
 import React from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Nav } from "react-bootstrap";
 import { axios } from "axios";
-import Booklist from "./Book";
+import Booklist from "./Booklist";
+// import Book from "../Book";
 
 export default class Searchbox extends React.Component {
   constructor(props) {
@@ -11,14 +12,12 @@ export default class Searchbox extends React.Component {
       searchbox_value: " ",
       select_value: "Name",
       category: "",
+      selected: false,
     };
   }
 
-  searchBooks = () => {};
-
   handleSearchboxChange = (value) => {
     this.setState({ searchbox_value: value }, () => {
-      console.log(value);
       switch (this.state.select_value) {
         case "Name":
           this.child.current.searchBooksByName(
@@ -27,7 +26,6 @@ export default class Searchbox extends React.Component {
           );
           break;
         case "Author":
-          console.log("author");
           this.child.current.searchBooksByAuthor(
             this.state.searchbox_value,
             this.state.category
@@ -73,7 +71,7 @@ export default class Searchbox extends React.Component {
                 <Form.Label>Search by: </Form.Label>
                 <Form.Select
                   id="category"
-                  onChange={() => this.handleSelectChange}
+                  onChange={(event) => this.handleSelectChange(event)}
                 >
                   <option>Name</option>
                   <option>Author</option>
@@ -84,12 +82,11 @@ export default class Searchbox extends React.Component {
               </Button>
             </Form>
           </div>
+          <Booklist
+            ref={this.child}
+            search_value={this.state.searchbox_value}
+          ></Booklist>
         </div>
-        <Booklist
-          ref={this.child}
-          bookName={this.state.searchbox_value}
-          bookCategory={this.state.category}
-        ></Booklist>
       </>
     );
   }

@@ -1,106 +1,87 @@
-import React, { Component, useEffect, useState } from "react";
+import { Rating } from "@mui/material";
 import axios from "axios";
-import { Button, Card, Container, Row, Col } from "react-bootstrap";
-import Rating from "@mui/material/Rating";
+import React, { useEffect } from "react";
+import { useState, useRef } from "react";
+import { Col, Image, Row, Container } from "react-bootstrap";
+import { useSearchParams, useParams } from "react-router-dom";
+import "../styles/stylesheet.css";
+import Book_menu from "./Book_menu";
 
-export default class Booklist extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      books: [],
-      current_book: null,
-    };
+export default function Book(props) {
+  const { index } = useParams();
+  const [books, setBooks] = useState([]);
+  const [book, setBook] = useState();
+
+  const IsFirst = useRef(true);
+
+  useEffect(() => {
+    if (book == undefined || book.Count != index) {
+      fetch(`/books/${index}`)
+        .then((res) => res.json())
+        .then((data) => setBook(data));
+    }
+  }, [book]);
+
+  useEffect(() => {
+    if (book) {
+      fetch(`/books/all`)
+        .then((res) => res.json())
+        .then((data) => {
+          const newlist = data.filter((current) => current.name != book.name);
+          console.log(newlist);
+          setBooks(newlist);
+        });
+    }
+  }, [book]);
+  if (book == undefined) {
+    return <></>;
   }
-
-  componentDidMount = () => {
-    this.getBooks();
-  };
-  getBooks = () => {
-    axios
-      .get("/books/all")
-      .then((response) => {
-        const data = response.data;
-        this.setState({ books: data });
-      })
-      .catch(() => {
-        alert("Error receiving book list");
-      });
-  };
-
-  searchBooksByName = (name, category) => {
-    axios({
-      method: "post",
-      url: "/books/get_books_by_name",
-      headers: {},
-      data: {
-        name: name,
-        category: category,
-      },
-    })
-      .then((response) => {
-        const data = response.data;
-        this.setState({ books: data });
-      })
-      .catch((e) => {
-        alert(e.message);
-      });
-  };
-
-  searchBooksByAuthor = (author, category) => {
-    console.log(author + category);
-    axios({
-      method: "post",
-      url: "/books/get_books_by_author",
-      headers: {},
-      data: {
-        author: author,
-        category: category,
-      },
-    })
-      .then((response) => {
-        const data = response.data;
-        this.setState({ books: data });
-      })
-      .catch((e) => {
-        alert(e.message);
-      });
-  };
-
-  displayBooks = (books) => {
-    if (!books.length) return null;
-    const rendered_books = books.map((book, index) => {
-      return (
-        <Col style={{ margin: "10px" }} key={index}>
-          <Card
+  return (
+    <div
+      style={{
+        margin: "auto",
+      }}
+    >
+      <Container className="book-container">
+        <div className="book-photo">
+          <Image
+            src={"/books/images/" + book.photo}
+            height="100%"
+            width="100%"
             style={{
-              marginLeft: "10px",
-              width: "200px",
-              height: "400px",
-              borderWidth: "1px",
-              position: "relative",
+              margin: "auto",
+              borderWidth: "0.5px",
+              borderColor: "black",
+              border: "solid",
             }}
-          >
-            <div style={{ margin: "auto", padding: 20 }}>
-              <Card.Img
-                src={book.photo}
-                style={{ width: "167px", height: "250px" }}
-              ></Card.Img>
-              <Card.Title style={{ minBlockSize: 50 }}>{book.name}</Card.Title>
-              {/* <Card.Text style={{ fontSize: "19px" }}>{book.description}</Card.Text> */}
-              <Rating readOnly value={book.rating}></Rating>
-            </div>
-          </Card>
-        </Col>
-      );
-    });
-    return rendered_books;
-  };
+          ></Image>
+        </div>
 
-  render() {
-    return (
-      <div style={{ marginTop: "100px" }}>
-        <Row xs={7}>{this.displayBooks(this.state.books)}</Row>
-      </div>
-    );
-  }
+        <div className="book-content">
+          <h1>{book.name}</h1>
+          <p>{book.author}</p>
+          <Rating value={book.rating} readOnly></Rating>
+          <p>{book.description}</p>
+          <Row>
+            <Col>
+              <p style={{ fontSize: 24 }}>
+                In stock: <b>{book.InStock}</b>
+              </p>
+            </Col>
+            <Col>
+              <p style={{ fontSize: 24 }}>
+                Price: <b>{book.price}$</b>
+              </p>
+            </Col>
+          </Row>
+        </div>
+      </Container>
+      {/* <Book_menu
+        selectBook={props.selectBook}
+        books={props.Booklist}
+        setBook={setBook}
+      ></Book_menu> */}
+      {/* <h1>{JSON.stringify(books)}</h1> */}
+    </div>
+  );
 }
