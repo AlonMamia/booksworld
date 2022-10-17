@@ -2,10 +2,9 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 const mongooseIncrement = require("mongoose-increment");
 const increment = mongooseIncrement(mongoose);
+require("dotenv").config();
 
-mongoose
-  .connect("mongodb://localhost/BooksWorld")
-  .then(() => console.log("connect success"));
+mongoose.connect(process.env.DB_URL).then(() => console.log("connect success"));
 
 const book_schema = mongoose.Schema({
   name: String,
@@ -13,7 +12,6 @@ const book_schema = mongoose.Schema({
   year: Number,
   photo: String,
   description: String,
-  tags: [String],
   rating: Number,
   InStock: Number,
   price: Number,

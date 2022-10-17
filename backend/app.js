@@ -16,12 +16,16 @@ app.use(helmet());
 app.use("/uploads", express.static("uploads"));
 app.use("/books", books);
 
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+app.get("*", function (_, res) {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"), function(err){
+    if(err){
+      res.status(500).send(err)
+    }
+  });
 });
 
-app.listen(5000, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log(`listening on port 5000`);
 });
