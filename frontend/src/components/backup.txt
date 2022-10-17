@@ -1,0 +1,42 @@
+ // <Col style={{ marginBottom: "10px" }} key={index}>
+        //   <Card
+        //     defaultValue={book}
+        //     onClick={() => selectBook(index)}
+        //     style={{
+        //       // marginLeft: "10px",
+        //       width: "200px",
+        //       height: "400px",
+        //       borderWidth: "1px",
+        //       position: "relative",
+        //     }}
+        //   >
+        //     <div style={{ margin: "auto", padding: 20 }}>
+        //       <Card.Img
+        //         src={book.photo}
+        //         style={{ width: "100%", height: "80%" }}
+        //       ></Card.Img>
+        //       <Card.Title style={{ minBlockSize: 50 }}>{book.name}</Card.Title>
+        //       {/* <Card.Text style={{ fontSize: "19px" }}>{book.description}</Card.Text> */}
+        //       <Rating readOnly value={book.rating}></Rating>
+        //     </div>
+        //   </Card>
+        // </Col>
+
+        // <Col style={{ marginBottom: "10px" }} key={index}>
+        //   <Card
+        //     defaultValue={book}
+        //     onClick={() => selectBook(index)}
+        //     className="bookCard"
+        //     style={{
+        //       // marginLeft: "10px",
+        //       width: "180px",
+        //       height: "300px",
+        //       position: "relative",
+        //     }}
+        //   >
+        //     <Card.Img
+        //       src={book.photo}
+        //       style={{ width: "100%", height: "100%" }}
+        //     ></Card.Img>
+        //   </Card>
+        // </Col>

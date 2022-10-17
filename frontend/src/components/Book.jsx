@@ -1,73 +1,87 @@
-import React, { Component, useEffect, useState } from "react";
+import { Rating } from "@mui/material";
 import axios from "axios";
-import { Button } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { useState, useRef } from "react";
+import { Col, Image, Row, Container } from "react-bootstrap";
+import { useSearchParams, useParams } from "react-router-dom";
+import "../styles/stylesheet.css";
+import Book_menu from "./Book_menu";
 
-class Book extends Component {
-  render() {
-    return (
-      <div>
-        <h1 id="name">{this.props.book_name}</h1>
-        <image src={this.props.photo} width="1000" height="1000"></image>
-        <h2 id="author">{this.props.author}</h2>
-        <h2 id="description">{this.props.description}</h2>
-        <h2 id="raiting">{this.props.raiting}</h2>
-        <h2 id="InStock">{this.props.InStock}</h2>
-        <h2 id="tags">{this.props.tags}</h2>
-      </div>
-    );
+export default function Book(props) {
+  const { index } = useParams();
+  const [books, setBooks] = useState([]);
+  const [book, setBook] = useState();
+
+  const IsFirst = useRef(true);
+
+  useEffect(() => {
+    if (book == undefined || book.Count != index) {
+      fetch(`/books/${index}`)
+        .then((res) => res.json())
+        .then((data) => setBook(data));
+    }
+  }, [book]);
+
+  useEffect(() => {
+    if (book) {
+      fetch(`/books/all`)
+        .then((res) => res.json())
+        .then((data) => {
+          const newlist = data.filter((current) => current.name != book.name);
+          console.log(newlist);
+          setBooks(newlist);
+        });
+    }
+  }, [book]);
+  if (book == undefined) {
+    return <></>;
   }
-}
-
-export default class Booklist extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      books: [],
-      current_book: null,
-    };
-  }
-
-  componentDidMount = () => {
-    this.getBooks();
-  };
-  getBooks = () => {
-    axios
-      .get("/books/all")
-      .then((response) => {
-        const data = response.data;
-        this.setState({ books: data });
-      })
-      .catch(() => {
-        alert("Error receiving book list");
-      });
-  };
-
-  displayBooks = (books) => {
-    if (!books.length) return null;
-    console.log(books);
-    const rendered_books = books.map((book, index) => {
-      return (
-        <div key={index}>
-          <h1>{book.photo}</h1>
-          <img src={book.photo}></img>
+  return (
+    <div
+      style={{
+        margin: "auto",
+      }}
+    >
+      <Container className="book-container">
+        <div className="book-photo">
+          <Image
+            src={"/books/images/" + book.photo}
+            height="100%"
+            width="100%"
+            style={{
+              margin: "auto",
+              borderWidth: "0.5px",
+              borderColor: "black",
+              border: "solid",
+            }}
+          ></Image>
         </div>
-      );
-    });
-    return rendered_books;
-  };
 
-  render() {
-    return (
-      <div>
-        <h1>{this.displayBooks(this.state.books)}</h1>
-      </div>
-    );
-    // return (
-    //   <div className="container">
-    //     <form>
-    //       <input type="search" name="book_search" placeholder="Search here!" />
-    //     </form>
-    //   </div>
-    // );
-  }
+        <div className="book-content">
+          <h1>{book.name}</h1>
+          <p>{book.author}</p>
+          <Rating value={book.rating} readOnly></Rating>
+          <p>{book.description}</p>
+          <Row>
+            <Col>
+              <p style={{ fontSize: 24 }}>
+                In stock: <b>{book.InStock}</b>
+              </p>
+            </Col>
+            <Col>
+              <p style={{ fontSize: 24 }}>
+                Price: <b>{book.price}$</b>
+              </p>
+            </Col>
+          </Row>
+        </div>
+      </Container>
+      {/* <Book_menu
+        selectBook={props.selectBook}
+        books={props.Booklist}
+        setBook={setBook}
+      ></Book_menu> */}
+      {/* <h1>{JSON.stringify(books)}</h1> */}
+    </div>
+  );
 }

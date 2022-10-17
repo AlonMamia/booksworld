@@ -1,7 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
-const mongooseIncrement = require("mongoose-increment");
-const increment = mongooseIncrement(mongoose);
+var mongooseIncrement = require("mongoose-increment");
 
 mongoose
   .connect("mongodb://localhost/BooksWorld")
@@ -17,11 +16,6 @@ const book_schema = mongoose.Schema({
   rating: Number,
   InStock: Number,
   price: Number,
-});
-
-book_schema.plugin(increment, {
-  modelName: "books",
-  fieldName: "Count",
 });
 
 const Book = new mongoose.model("books", book_schema);
