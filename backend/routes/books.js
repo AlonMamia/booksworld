@@ -91,7 +91,7 @@ route.get("/images/:key", async (req, res) => {
   }
 });
 
-route.get("/:counter", async (req, res) => {
+route.get("/books/:counter", async (req, res) => {
   if (req.params.counter) {
     try {
       const book = await Book.findOne({ Count: req.params.counter });

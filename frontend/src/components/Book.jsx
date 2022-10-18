@@ -16,23 +16,12 @@ export default function Book(props) {
 
   useEffect(() => {
     if (book == undefined || book.Count != index) {
-      fetch(`/books/${index}`)
+      fetch(`/books/books/${index}`)
         .then((res) => res.json())
         .then((data) => setBook(data));
     }
   }, [book]);
 
-  useEffect(() => {
-    if (book) {
-      fetch(`/books/all`)
-        .then((res) => res.json())
-        .then((data) => {
-          const newlist = data.filter((current) => current.name != book.name);
-          console.log(newlist);
-          setBooks(newlist);
-        });
-    }
-  }, [book]);
   if (book == undefined) {
     return <></>;
   }

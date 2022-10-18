@@ -9,8 +9,8 @@ import axios from "axios";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import Rating from "@mui/material/Rating";
 import Book from "./Book";
-// import { stylesheet  } from "../styles/stylesheet.css";
 import "../styles/cardstyle.css";
+
 import { maxHeight } from "@mui/system";
 import {
   BrowserRouter,
@@ -21,67 +21,14 @@ import {
   useParams,
 } from "react-router-dom";
 
-export const Booklist = forwardRef((props, ref) => {
-  const [books, setBooks] = useState([]);
+export const Booklist = (props) => {
   const [current_book, setCurrent_book] = useState(null);
   const first_update = useRef(true);
   const navigate = useNavigate();
 
-  useImperativeHandle(ref, () => ({
-    searchBooksByName(name, category) {
-      console.log(name);
-      axios({
-        method: "post",
-        url: "/books/get_books_by_name",
-        headers: {},
-        data: {
-          name: name,
-          category: category,
-        },
-      })
-        .then((response) => {
-          const data = response.data;
-          setBooks(data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    searchBooksByAuthor(author, category) {
-      console.log(author + category);
-      axios({
-        method: "post",
-        url: "/books/get_books_by_author",
-        headers: {},
-        data: {
-          author: author,
-          category: category,
-        },
-      })
-        .then((response) => {
-          const data = response.data;
-          setBooks(data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    getBooks() {
-      axios
-        .get("/books/all")
-        .then((response) => {
-          const data = response.data;
-          setBooks(data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-  }));
-
-  const selectBook = async (books, index_in_array) => {
+  const selectBook = (books, index_in_array) => {
     setCurrent_book(books[index_in_array]);
-    setBooks(books.filter((book) => book != current_book));
+    // setBooks(books.filter((book) => book != current_book));
     console.log(current_book);
   };
 
@@ -94,6 +41,7 @@ export const Booklist = forwardRef((props, ref) => {
   }, [current_book]);
 
   const displayBooks = (books) => {
+    console.log("hi");
     if (!books.length) return null;
 
     const rendered_books = books.map((book, index) => {
@@ -116,7 +64,7 @@ export const Booklist = forwardRef((props, ref) => {
             </p>
             <Button
               className="primary"
-              onClick={() => selectBook(books, index)}
+              onClick={() => selectBook(props.books, index)}
             >
               view
             </Button>
@@ -133,13 +81,7 @@ export const Booklist = forwardRef((props, ref) => {
         path="/books/:index"
         element={
           <div style={{ marginTop: "50px" }}>
-            {
-              <Book
-                Booklist={books}
-                selectBook={selectBook}
-                current_book={current_book}
-              ></Book>
-            }
+            {<Book Booklist={props.books} selectBook={selectBook}></Book>}
           </div>
         }
       ></Route>
@@ -155,11 +97,11 @@ export const Booklist = forwardRef((props, ref) => {
             }}
           >
             <Row xs={"auto"} xxl={"auto"}>
-              {displayBooks(books)}
+              {displayBooks(props.books)}
             </Row>
           </div>
         }
       ></Route>
     </Routes>
   );
-});
+};
